@@ -15,11 +15,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security & performance
+// Security & performance middlewares
 app.disable('x-powered-by');
-app.use(helmet({
-  contentSecurityPolicy: false
-}));
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
 app.use(morgan('combined'));
 
@@ -35,30 +33,24 @@ app.use(express.static(publicDir, { maxAge: '1y', etag: true }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Email transporter (ENV-driven)
+// Email transporter function
 function createTransport() {
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = Number(process.env.SMTP_PORT || 587);
-  const secure = !!(process.env.SMTP_SECURE && process.env.SMTP_SECURE !== 'false');
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  const opts = {
-    host,
-    port,
-    secure,
-    auth: user && pass ? { user, pass } : undefined,
-  };
-  return nodemailer.createTransport(opts);
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER || 'chatgpt0067@gmail.com',
+      pass: process.env.SMTP_PASS || 'wyde ctnn cvek dqpl'
+    }
+  });
 }
 
-const LOVER_EMAIL = (process.env.LOVER_EMAIL || process.env.EMAIL_HOST_USER || '').trim();
+const LOVER_EMAIL = (process.env.LOVER_EMAIL || process.env.SMTP_USER || '').trim();
 
 // Routes
 app.get(['/', '/index'], (req, res) => {
-  res.render('index', {
-    recipient_email: LOVER_EMAIL || ''
-  });
+  res.render('index', { recipient_email: LOVER_EMAIL });
 });
 
 app.get('/love', (req, res) => {
@@ -68,10 +60,8 @@ app.get('/love', (req, res) => {
 app.post(['/save-location', '/save-location/'], async (req, res) => {
   try {
     const { lat, lon, accuracy, recipient_email } = req.body || {};
-    const to = (recipient_email || LOVER_EMAIL || '').trim();
-    if (!to) {
-      return res.status(400).json({ ok: false, error: 'Recipient email required' });
-    }
+    const to = (recipient_email || LOVER_EMAIL).trim();
+    if (!to) return res.status(400).json({ ok: false, error: 'Recipient email required' });
 
     const latNum = Number(lat);
     const lonNum = Number(lon);
@@ -84,7 +74,7 @@ app.post(['/save-location', '/save-location/'], async (req, res) => {
 
     const transporter = createTransport();
     await transporter.sendMail({
-      from: process.env.MAIL_FROM || process.env.SMTP_USER || 'no-reply@sipehra-node',
+      from: process.env.MAIL_FROM || process.env.SMTP_USER || 'no-reply@example.com',
       to,
       subject,
       text: message,
@@ -97,10 +87,10 @@ app.post(['/save-location', '/save-location/'], async (req, res) => {
   }
 });
 
-// Health
+// Health check
 app.get('/healthz', (_req, res) => res.json({ ok: true }));
 
-// Start
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
