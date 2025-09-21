@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="always-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#180c12" />
   <title>Ищущий — обрящет 💞</title>
   <meta name="theme-color" content="#ff6b9a" />
 
@@ -115,13 +117,12 @@
     }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
-    /* Tip (top banner) */
 .tip {
   position: fixed;
-  top: clamp(8px, 2.5vh, 18px);
+  top: clamp(5px, 8.5vh, 18px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 50;                     /* боло аз .scene ва #hearts */
+  z-index: 50;                    
   display: inline-flex;
   align-items: center;
   gap: .6rem;
@@ -129,8 +130,8 @@
   padding: .6rem .95rem;
   border-radius: 999px;
 
-  color: #2a2230;                  /* матни қавӣ дар рӯи равшанӣ */
-  background: rgba(255,255,255,.72);
+  color: #2a2230;                
+  background: rgba(89, 67, 67, 0.72);
   border: 1px solid rgba(255,255,255,.55);
   box-shadow: 0 12px 28px rgba(0,0,0,.14),
               0 10px 30px rgba(255,77,141,.18);
@@ -157,7 +158,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* ҳалқаи неон атрофи баннер */
 .tip:after {
   content: "";
   position: absolute;
