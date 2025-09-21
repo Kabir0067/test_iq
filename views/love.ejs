@@ -1,66 +1,347 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ищущий — обрящет 💞</title>
-  <meta name="theme-color" content="#ff6b9a">
+  <meta name="theme-color" content="#ff6b9a" />
+
   <style>
-    :root { --bg1:#fff0f7; --bg2:#ffe7f1; --glow:#ff99bf; --ink:#2a2230; --muted:#6c6570; --card:rgba(255,255,255,.72); --stroke:rgba(255,255,255,.55); --accent:#ff4d8d; --accent-2:#ff7aa9; --radius:26px; --shadow:0 22px 60px rgba(255,77,141,.25), 0 6px 22px rgba(0,0,0,.10); --pulse:0; --bass:0; --tilt:0deg; --beatScale:1; }
-    @media (prefers-color-scheme: dark) { :root { --bg1:#180c12; --bg2:#2a1522; --glow:#ff78a8; --ink:#f7f0f8; --muted:#d2c7d5; --card:rgba(32,19,28,.55); --stroke:rgba(255,255,255,.08); --accent:#ff6aa0; --accent-2:#ff92b9; --shadow:0 24px 64px rgba(0,0,0,.48), 0 8px 24px rgba(0,0,0,.36); } }
-    *,*:before,*:after { box-sizing:border-box; }
-    html,body { height:100%; }
-    body { margin:0; color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, 'Noto Sans', sans-serif; background: radial-gradient(1200px 800px at 10% 5%, var(--bg2), transparent 60%), radial-gradient(1000px 700px at 100% 100%, var(--bg1), transparent 70%), linear-gradient(180deg, var(--bg1), var(--bg2)); overflow-x:hidden; }
-    .scene { position:fixed; inset:0; pointer-events:none; z-index:-3; overflow:hidden; filter:saturate(1.06); }
-    .orb { position:absolute; width:64vmin; height:64vmin; border-radius:50%; background:radial-gradient(circle at 30% 30%, var(--glow), transparent 60%); opacity:calc(.18 + var(--pulse)*.22); mix-blend-mode:screen; filter:blur(22px); animation:float 22s ease-in-out infinite; transform:translateZ(0) scale(calc(1 + var(--bass)*.08)); }
-    .orb.o1 { top:-12vmin; left:-14vmin; animation-delay:-4s; }
-    .orb.o2 { bottom:-18vmin; right:-12vmin; animation-delay:-9s; }
-    .orb.o3 { top:42%; left:62%; width:44vmin; height:44vmin; opacity:.3; animation-delay:-14s; }
-    @keyframes float { 50% { transform: translateY(-16px) translateX(10px); } }
-    canvas#hearts { position:fixed; inset:0; z-index:-2; pointer-events:none; filter:blur(.15px); }
-    .wrap { min-height:100dvh; display:grid; place-items:center; padding:clamp(16px,4vw,28px); }
-    .card { width:min(760px,94vw); background:var(--card); backdrop-filter:blur(14px) saturate(1.06); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow:var(--shadow); position:relative; overflow:hidden; transform:perspective(1200px) rotateY(var(--tilt)) scale(var(--beatScale)); transition:transform .08s linear, box-shadow .2s ease; }
-    .card:before { content:''; position:absolute; inset:-2px; border-radius:inherit; background:conic-gradient(from 180deg at 50% 50%, transparent 0 65%, rgba(255,255,255,.22) 75%, transparent 85% 100%); mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); padding:1px; opacity:calc(.4 + var(--pulse)*.45); pointer-events:none; filter:drop-shadow(0 10px 22px rgba(0,0,0,.12)); }
-    .card-inner { padding:clamp(24px, 4.6vw, 40px); text-align:center; }
-    .badge { display:inline-flex; gap:.55rem; align-items:center; padding:.48rem .85rem; border-radius:999px; background:rgba(255,255,255,.55); border:1px dashed var(--stroke); color:#b03c6b; font-weight:800; font-size:clamp(12px,2.7vw,13px); box-shadow:0 6px 18px rgba(255,77,141,.18); }
-    h1 { margin:.8rem 0 .45rem; line-height:1.08; font-size:clamp(28px, 7.5vw, 46px); background:linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:.2px; font-weight:900; text-shadow:0 0 calc(10px + 20px*var(--bass)) rgba(255,109,156,.25); }
-    p { margin:.35rem auto 1.1rem; max-width:60ch; line-height:1.65; font-size:clamp(14px,3.7vw,17px); color:var(--muted); }
-    .corner { position:absolute; width:92px; aspect-ratio:1; opacity:calc(.12 + var(--pulse)*.2); filter:drop-shadow(0 10px 20px rgba(0,0,0,.12)); }
-    .corner.tl { top:-6px; left:-6px; transform:rotate(-12deg); }
-    .corner.br { right:-8px; bottom:-10px; transform:rotate(18deg); }
-    .heart { position:relative; width:100%; height:100%; }
-    .heart:before, .heart:after { content:''; position:absolute; width:52%; height:80%; background:linear-gradient(180deg, var(--accent-2), transparent 80%); border-radius:40% 40% 0 0; transform-origin:bottom center; filter:drop-shadow(0 8px 18px rgba(255,77,141,.25)); }
-    .heart:before { left:25%; top:20%; rotate:45deg; }
-    .heart:after { left:23%; top:20%; rotate:-45deg; }
-    .toast { position:fixed; left:50%; bottom:16px; transform:translateX(-50%) translateY(18px); background:#1a1a1a; color:#fff; padding:.65rem .9rem; border-radius:12px; font-size:13px; box-shadow:0 10px 24px rgba(0,0,0,.25); opacity:0; transition:all .25s ease; z-index:6; }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    @media (prefers-reduced-motion: reduce) { .orb, #hearts, .card { animation:none; transition:none; } }
+    :root{
+      --bg1:#fff0f7; --bg2:#ffe7f1; --glow:#ff99bf; --ink:#2a2230; --muted:#6c6570;
+      --card:rgba(255,255,255,.72); --stroke:rgba(255,255,255,.55);
+      --accent:#ff4d8d; --accent-2:#ff92b9; --radius:26px;
+      --shadow:0 22px 60px rgba(255,77,141,.25), 0 6px 22px rgba(0,0,0,.10);
+      --pulse:0; --bass:0; --tilt:0deg; --beatScale:1;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg1:#180c12; --bg2:#2a1522; --glow:#ff78a8; --ink:#f7f0f8; --muted:#d2c7d5;
+        --card:rgba(32,19,28,.55); --stroke:rgba(255,255,255,.08);
+        --accent:#ff6aa0; --accent-2:#ff92b9;
+        --shadow:0 24px 64px rgba(0,0,0,.48), 0 8px 24px rgba(0,0,0,.36);
+      }
+    }
+    *,*:before,*:after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink);
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
+      background:
+        radial-gradient(1200px 800px at 10% 5%, var(--bg2), transparent 60%),
+        radial-gradient(1000px 700px at 100% 100%, var(--bg1), transparent 70%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Ambient scene */
+    .scene{position:fixed; inset:0; pointer-events:none; z-index:-3; overflow:hidden; filter:saturate(1.06)}
+    .orb{
+      position:absolute; width:64vmin; height:64vmin; border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, var(--glow), transparent 60%);
+      opacity:calc(.18 + var(--pulse)*.22); mix-blend-mode:screen; filter:blur(22px);
+      animation:float 22s ease-in-out infinite;
+      transform:translateZ(0) scale(calc(1 + var(--bass)*.08));
+    }
+    .orb.o1{top:-12vmin; left:-14vmin; animation-delay:-4s}
+    .orb.o2{bottom:-18vmin; right:-12vmin; animation-delay:-9s}
+    .orb.o3{top:42%; left:62%; width:44vmin; height:44vmin; opacity:.3; animation-delay:-14s}
+    @keyframes float{50%{transform:translateY(-16px) translateX(10px)}}
+
+    /* Hearts canvas */
+    #hearts{position:fixed; inset:0; z-index:-2; pointer-events:none; filter:blur(.15px)}
+
+    /* Card */
+    .wrap{min-height:100dvh; display:grid; place-items:center; padding:clamp(16px,4vw,28px)}
+    .card{
+      width:min(760px,94vw); background:var(--card);
+      backdrop-filter:blur(14px) saturate(1.06);
+      border:1px solid var(--stroke); border-radius:var(--radius); box-shadow:var(--shadow);
+      position:relative; overflow:hidden;
+      transform:perspective(1200px) rotateY(var(--tilt)) scale(var(--beatScale));
+      transition:transform .08s linear, box-shadow .2s ease;
+    }
+    .card:before{
+      content:""; position:absolute; inset:-2px; border-radius:inherit;
+      background:conic-gradient(from 180deg at 50% 50%, transparent 0 65%, rgba(255,255,255,.22) 75%, transparent 85% 100%);
+      mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      padding:1px; opacity:calc(.4 + var(--pulse)*.45); pointer-events:none;
+      filter:drop-shadow(0 10px 22px rgba(0,0,0,.12));
+    }
+    .card-inner{padding:clamp(24px,4.6vw,40px); text-align:center}
+    .badge{
+      display:inline-flex; gap:.55rem; align-items:center;
+      padding:.48rem .85rem; border-radius:999px;
+      background:rgba(255,255,255,.55); border:1px dashed var(--stroke);
+      color:#b03c6b; font-weight:800; font-size:clamp(12px,2.7vw,13px);
+      box-shadow:0 6px 18px rgba(255,77,141,.18);
+    }
+    h1{
+      margin:.8rem 0 .45rem; line-height:1.08; font-size:clamp(28px,7.5vw,46px);
+      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      letter-spacing:.2px; font-weight:900;
+      text-shadow:0 0 calc(10px + 20px*var(--bass)) rgba(255,109,156,.25);
+    }
+    p{margin:.35rem auto 1.1rem; max-width:60ch; line-height:1.65; font-size:clamp(14px,3.7vw,17px); color:var(--muted)}
+    h1 .emoji{
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: #ff6aa0;                    /* ё currentColor, ё ранги дилхоҳ */
+  -webkit-text-fill-color: #ff6aa0;  /* барои WebKit */
+  text-shadow: 0 0 18px rgba(255,106,160,.25); /* хоҳишӣ — барои намуди неон */
+}
+    /* Decorative corners */
+    .corner{position:absolute; width:92px; aspect-ratio:1; opacity:calc(.12 + var(--pulse)*.2); filter:drop-shadow(0 10px 20px rgba(0,0,0,.12))}
+    .corner.tl{top:-6px; left:-6px; transform:rotate(-12deg)}
+    .corner.br{right:-8px; bottom:-10px; transform:rotate(18deg)}
+    .heart{position:relative; width:100%; height:100%}
+    .heart:before,.heart:after{
+      content:""; position:absolute; width:52%; height:80%;
+      background:linear-gradient(180deg, var(--accent-2), transparent 80%);
+      border-radius:40% 40% 0 0; transform-origin:bottom center;
+      filter:drop-shadow(0 8px 18px rgba(255,77,141,.25));
+    }
+    .heart:before{left:25%; top:20%; rotate:45deg}
+    .heart:after{left:23%; top:20%; rotate:-45deg}
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%) translateY(18px);
+      background:#1a1a1a; color:#fff; padding:.65rem .9rem; border-radius:12px;
+      font-size:13px; box-shadow:0 10px 24px rgba(0,0,0,.25);
+      opacity:0; transition:all .25s ease; z-index:6;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+    @media (prefers-reduced-motion: reduce){ .orb, #hearts, .card{animation:none; transition:none} }
   </style>
 </head>
 <body>
+  <!-- Music (serve from same origin to avoid CORS for analyser) -->
   <audio id="bg-music" src="/Miyagi_Endshpil_Melodrama_bomba.mp3" autoplay loop playsinline aria-label="Фоновая музыка"></audio>
+
+  <!-- Ambient -->
   <div class="scene" aria-hidden="true">
     <div class="orb o1"></div>
     <div class="orb o2"></div>
     <div class="orb o3"></div>
   </div>
+
   <canvas id="hearts" aria-hidden="true"></canvas>
+
   <main class="wrap">
     <section class="card" role="region" aria-labelledby="ttl">
       <div class="corner tl"><div class="heart"></div></div>
       <div class="corner br"><div class="heart"></div></div>
       <div class="card-inner">
         <span class="badge">💖 Любовь + уважение</span>
-        <h1 id="ttl">Ищущий — обрящет, ХОЛА! 😉💘</h1>
+<h1 id="ttl">
+  <span class="grad">Ищущий — обрящет, ХОЛА!</span>
+  <span class="emoji" aria-hidden="false"> 😉💘</span>
+</h1>
         <p>Спасибо за согласие. Это красивый и уверенный шаг — я всегда с уважением к тебе. Если захочешь — всегда можешь передумать. Если хочешь, разблокируй меня 😊.</p>
       </div>
     </section>
   </main>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <script>
-    const toast=(msg)=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)};
-    (function(){const audio=document.getElementById('bg-music');let hasInteracted=false;let mutedFallbackUsed=false;const tryPlay=(unmute=false)=>{if(unmute && !hasInteracted) return; audio.muted=mutedFallbackUsed && !unmute; audio.volume=1.0; audio.play().catch(()=>{if(!mutedFallbackUsed){audio.muted=true;audio.play().then(()=>{mutedFallbackUsed=true;toast('Музыка запустилась тихо — тапни для звука! 🎵')}).catch(()=>{toast('Тапни экран для запуска музыки!')})}})};const attemptPlayback=()=>{if(audio.readyState>=2) tryPlay()};audio.addEventListener('canplay',attemptPlayback,{once:true});['DOMContentLoaded','load','pageshow'].forEach(ev=>window.addEventListener(ev,attemptPlayback));document.addEventListener('visibilitychange',()=>{if(!document.hidden) attemptPlayback()});const tick=setInterval(attemptPlayback,800);audio.addEventListener('playing',()=>{clearInterval(tick);if(mutedFallbackUsed) toast('Звук включён! 💖'); else toast('Музыка запущена! 🎵')},{once:true});const handleInteraction=()=>{hasInteracted=true;if(mutedFallbackUsed){audio.muted=false;audio.volume=1.0;audio.play()}tryPlay(true)};['pointerdown','touchstart','click','keydown','scroll','mousemove','pointermove','wheel'].forEach(ev=>window.addEventListener(ev,handleInteraction,{passive:true}))})();
-    (function(){const c=document.getElementById('hearts');const ctx=c.getContext('2d');let w,h,dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));let hearts=[],last=0;const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;function resize(){w=c.width=Math.floor(innerWidth*dpr);h=c.height=Math.floor(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'}resize();addEventListener('resize',resize,{passive:true});function makeHeart(x,y,boost=0){const hue=340+Math.random()*20;const size=(10+Math.random()*16)*(1+boost);hearts.push({x:x*dpr,y:y*dpr,vx:(Math.random()-0.5)*0.22*dpr,vy:-(0.6+Math.random()*0.8+boost*0.6)*dpr,g:0.008*dpr,life:0,max:1400+Math.random()*700,size:size*dpr,hue})}function drawHeart(x,y,s,alpha,hue){ctx.save();ctx.translate(x,y);ctx.scale(s/32,s/32);ctx.beginPath();for(let t=-Math.PI;t<=Math.PI;t+=0.1){const X=16*Math.pow(Math.sin(t),3);const Y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);if(t===-Math.PI) ctx.moveTo(X,-Y); else ctx.lineTo(X,-Y)}ctx.closePath();ctx.fillStyle=`hsla(${hue},85%,70%,${alpha})`;ctx.fill();ctx.restore()}function step(ts){if(!last) last=ts;const dt=Math.min(32,ts-last);last=ts;const pulse=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pulse'))||0;if(Math.random()<0.08+pulse*0.12){makeHeart(Math.random()*innerWidth,innerHeight-Math.random()*160,pulse*1.2)}ctx.clearRect(0,0,w,h);for(let i=hearts.length-1;i>=0;i--){const p=hearts[i];p.life+=dt;p.vy+=p.g*dt;p.x+=p.vx*dt*0.8;p.y+=p.vy*dt*0.8;const alpha=Math.max(0,1-p.life/p.max);drawHeart(p.x,p.y,p.size,alpha*0.9,p.hue);if(p.life>p.max) hearts.splice(i,1)}requestAnimationFrame(step)}if(!reduce) requestAnimationFrame(step);function burst(e){const touches=e.touches?[...e.touches]:[e];const pulse=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pulse'))||0;touches.forEach(t=>{makeHeart(t.clientX,t.clientY,1+pulse);makeHeart(t.clientX+12,t.clientY-8,0.7+pulse);makeHeart(t.clientX-10,t.clientY-6,0.7+pulse)})}addEventListener('pointerdown',burst,{passive:true});addEventListener('touchstart',burst,{passive:true});if(!reduce) for(let i=0;i<12;i++) makeHeart(Math.random()*innerWidth,innerHeight-Math.random()*120,0.4)})();
+    /* tiny toast */
+    const toast = (msg) => {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    };
+
+    /* autoplay with safe fallbacks */
+    (function (){
+      const audio = document.getElementById('bg-music');
+      let interacted = false, mutedFallback = false;
+
+      const tryPlay = (unmute=false)=>{
+        if (unmute && !interacted) return;
+        audio.muted = mutedFallback && !unmute;
+        audio.volume = 1.0;
+        audio.play().catch(()=>{
+          if (!mutedFallback){
+            audio.muted = true;
+            audio.play().then(()=>{
+              mutedFallback = true;
+              toast('Музыка запустилась тихо — тапни для звука! 🎵');
+            }).catch(()=>{ toast('Тапни экран для запуска музыки!'); });
+          }
+        });
+      };
+
+      const attempt = ()=>{ if (audio.readyState >= 2) tryPlay(); };
+      audio.addEventListener('canplay', attempt, { once:true });
+      ['DOMContentLoaded','load','pageshow'].forEach(ev=>addEventListener(ev, attempt));
+      document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) attempt(); });
+      const timer = setInterval(attempt, 800);
+      audio.addEventListener('playing', ()=>clearInterval(timer), { once:true });
+
+      const interact = ()=>{
+        interacted = true;
+        if (mutedFallback){ audio.muted = false; audio.volume = 1.0; audio.play(); }
+        tryPlay(true);
+      };
+      ['pointerdown','touchstart','click','keydown','scroll','mousemove','pointermove','wheel']
+        .forEach(ev=>addEventListener(ev, interact, { passive:true }));
+    })();
+
+    /* Rhythm driver: updates CSS vars from music (fallback if analyser not allowed) */
+    (function (){
+      const root = document.documentElement;
+      const audio = document.getElementById('bg-music');
+
+      try{
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) throw new Error('No AudioContext');
+
+        const ctx = new AC();
+        const src = ctx.createMediaElementSource(audio);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 1024;
+        src.connect(analyser);
+        analyser.connect(ctx.destination);
+
+        const bins = new Uint8Array(analyser.frequencyBinCount);
+
+        const wake = ()=>{ if (ctx.state !== 'running') ctx.resume().catch(()=>{}); };
+        ['pointerdown','touchstart','click','keydown'].forEach(ev => addEventListener(ev, wake, { passive:true }));
+        wake();
+
+        const band = (a,b)=>{
+          let s=0,c=0;
+          for (let i=a;i<b;i++){ s += bins[i]; c++; }
+          return (s/(c||1))/255;
+        };
+
+        function loop(){
+          analyser.getByteFrequencyData(bins);
+          const bass  = band(2, 28);
+          const mid   = band(28, 120);
+          const pulse = Math.min(1, bass*0.7 + mid*0.5);
+
+          root.style.setProperty('--bass',  bass.toFixed(3));
+          root.style.setProperty('--pulse', pulse.toFixed(3));
+          root.style.setProperty('--beatScale', (1 + (pulse-0.25)*0.06).toFixed(3));
+          root.style.setProperty('--tilt', (Math.sin(performance.now()/1200)*(0.6+bass*1.4)).toFixed(2)+'deg');
+
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+        window.__AUDIO_CTX__ = { ctx, analyser };
+
+      }catch(e){
+        function loop(){
+          const t = performance.now()/1000;
+          const bass  = (Math.sin(t*1.3)+1)/4;
+          const pulse = (Math.sin(t*2.1)+1)/3;
+
+          root.style.setProperty('--bass',  bass.toFixed(3));
+          root.style.setProperty('--pulse', pulse.toFixed(3));
+          root.style.setProperty('--beatScale', (1 + (pulse-0.25)*0.06).toFixed(3));
+          root.style.setProperty('--tilt', (Math.sin(performance.now()/1200)*(0.6+bass*1.4)).toFixed(2)+'deg');
+
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      }
+    })();
+
+    /* Hearts canvas (beat-reactive) */
+    (function (){
+      const c = document.getElementById('hearts');
+      const x = c.getContext('2d');
+      let w, h, dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      let A = [], last = 0;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function R(){
+        w = c.width  = Math.floor(innerWidth  * dpr);
+        h = c.height = Math.floor(innerHeight * dpr);
+        c.style.width  = innerWidth  + 'px';
+        c.style.height = innerHeight + 'px';
+      }
+      R();
+      addEventListener('resize', R, { passive:true });
+
+      function mk(X, Y, b = 0){
+        const hue  = 340 + Math.random() * 20;
+        const size = (10 + Math.random() * 16) * (1 + b);
+        A.push({
+          x: X * dpr,
+          y: Y * dpr,
+          vx: (Math.random() - 0.5) * 0.22 * dpr,
+          vy: -(.6 + Math.random() * 0.8 + b * 0.6) * dpr, /* <- fixed: vy: ... */
+          g: 0.008 * dpr,
+          life: 0,
+          max: 1300 + Math.random() * 600,
+          size: size * dpr,
+          hue
+        });
+      }
+
+      function draw(x0, y0, s, a, h){
+        x.save();
+        x.translate(x0, y0);
+        x.scale(s/32, s/32);
+        x.beginPath();
+        for(let t=-Math.PI; t<=Math.PI; t+=.1){
+          const X = 16 * Math.sin(t)**3;
+          const Y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+          (t===-Math.PI) ? x.moveTo(X, -Y) : x.lineTo(X, -Y);
+        }
+        x.closePath();
+        x.fillStyle = `hsla(${h},85%,70%,${a})`;
+        x.fill();
+        x.restore();
+      }
+
+      function step(ts){
+        if (!last) last = ts;
+        const dt = Math.min(32, ts - last);
+        last = ts;
+
+        const pulse = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pulse')) || 0;
+        if (Math.random() < 0.08 + pulse * 0.12){
+          mk(Math.random()*innerWidth, innerHeight - Math.random()*160, pulse*1.2);
+        }
+
+        x.clearRect(0,0,w,h);
+        for (let i = A.length-1; i >= 0; i--){
+          const q = A[i];
+          q.life += dt;
+          q.vy   += q.g * dt;
+          q.x    += q.vx * dt * .8;
+          q.y    += q.vy * dt * .8;
+          const al = Math.max(0, 1 - q.life/q.max);
+          draw(q.x, q.y, q.size, al*.9, q.hue);
+          if (q.life > q.max) A.splice(i,1);
+        }
+        requestAnimationFrame(step);
+      }
+      if (!reduce) requestAnimationFrame(step);
+
+      function burst(e){
+        const ts = e.touches ? [...e.touches] : [e];
+        const pulse = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pulse')) || 0;
+        ts.forEach(t=>{
+          mk(t.clientX, t.clientY, 1 + pulse);
+          mk(t.clientX+12, t.clientY-8, .7 + pulse);
+          mk(t.clientX-10, t.clientY-6, .7 + pulse);
+        });
+      }
+      addEventListener('pointerdown', burst, { passive:true });
+      addEventListener('touchstart', burst, { passive:true });
+
+      if (!reduce) for (let i=0;i<12;i++) mk(Math.random()*innerWidth, innerHeight-Math.random()*120, .4);
+    })();
   </script>
 </body>
 </html>
