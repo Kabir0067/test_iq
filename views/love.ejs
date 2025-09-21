@@ -16,6 +16,30 @@
       --shadow:0 22px 60px rgba(255,77,141,.25), 0 6px 22px rgba(0,0,0,.10);
       --pulse:0; --bass:0; --tilt:0deg; --beatScale:1;
     }
+    :root{
+  --bg1:#180c12; --bg2:#2a1522; --glow:#ff78a8;
+  --ink:#f7f0f8; --muted:#d2c7d5;
+  --card:rgba(32,19,28,.55); --stroke:rgba(255,255,255,.08);
+  --accent:#ff6aa0; --accent-2:#ff92b9;
+  --radius:26px;
+  --shadow:0 24px 64px rgba(0,0,0,.48), 0 8px 24px rgba(0,0,0,.36);
+  --pulse:0; --bass:0; --tilt:0deg; --beatScale:1;
+}
+
+/* Боварӣ, ки браузер ҳам тарҳи торикро истифода мебарад (скроллбарҳо, формҳо) */
+html { color-scheme: dark; }
+
+/* Агар дар коди кӯҳна ҳанӯз чунин блок бошад, ӯро безарар кунем: */
+@media (prefers-color-scheme: light){
+  :root{
+    /* боз ҳам торик — бар системаи “равшан” ғолиб мешавад */
+    --bg1:#180c12; --bg2:#2a1522; --glow:#ff78a8;
+    --ink:#f7f0f8; --muted:#d2c7d5;
+    --card:rgba(32,19,28,.55); --stroke:rgba(255,255,255,.08);
+    --accent:#ff6aa0; --accent-2:#ff92b9;
+    --shadow:0 24px 64px rgba(0,0,0,.48), 0 8px 24px rgba(0,0,0,.36);
+  }
+}
     @media (prefers-color-scheme: dark){
       :root{
         --bg1:#180c12; --bg2:#2a1522; --glow:#ff78a8; --ink:#f7f0f8; --muted:#d2c7d5;
@@ -26,15 +50,15 @@
     }
     *,*:before,*:after{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; color:var(--ink);
-      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;
-      background:
-        radial-gradient(1200px 800px at 10% 5%, var(--bg2), transparent 60%),
-        radial-gradient(1000px 700px at 100% 100%, var(--bg1), transparent 70%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow-x:hidden;
-    }
+  body{
+  margin:0; color:var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+  background:
+    radial-gradient(1200px 800px at 10% 5%, var(--bg2), transparent 60%),
+    radial-gradient(1000px 700px at 100% 100%, var(--bg1), transparent 70%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
 
     /* Ambient scene */
     .scene{position:fixed; inset:0; pointer-events:none; z-index:-3; overflow:hidden; filter:saturate(1.06)}
