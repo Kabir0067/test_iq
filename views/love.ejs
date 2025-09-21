@@ -115,14 +115,86 @@
     }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
+    /* Tip (top banner) */
+.tip {
+  position: fixed;
+  top: clamp(8px, 2.5vh, 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;                     /* боло аз .scene ва #hearts */
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+
+  padding: .6rem .95rem;
+  border-radius: 999px;
+
+  color: #2a2230;                  /* матни қавӣ дар рӯи равшанӣ */
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: 0 12px 28px rgba(0,0,0,.14),
+              0 10px 30px rgba(255,77,141,.18);
+
+  backdrop-filter: blur(10px) saturate(1.06);
+  -webkit-backdrop-filter: blur(10px) saturate(1.06);
+
+  font: 800 clamp(12px, 3.6vw, 14px)/1.1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+
+.tip::before {
+  content: "👆";
+  font-size: 1.05em;
+  filter: drop-shadow(0 0 8px rgba(255,106,160,.35));
+}
+
+.tip .txt {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ҳалқаи неон атрофи баннер */
+.tip:after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent));
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: .35;
+  pointer-events: none;
+  animation: spin 6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* адаптив — дар экранҳои танг каме хурдтар ва марказ */
+@media (max-width: 420px) {
+  .tip { padding: .5rem .8rem; gap: .5rem; }
+}
+
+/* боварӣ ҳосил кун, ки қабатҳои пасзамина аз ин поинтаранд */
+.scene { z-index: -3; }
+#hearts { z-index: -2; }
+
+
     @media (prefers-reduced-motion: reduce){ .orb, #hearts, .card{animation:none; transition:none} }
   </style>
 </head>
 <body>
-  <!-- Music (serve from same origin to avoid CORS for analyser) -->
   <audio id="bg-music" src="/Miyagi_Endshpil_Melodrama_bomba.mp3" autoplay loop playsinline aria-label="Фоновая музыка"></audio>
 
-  <!-- Ambient -->
+<div class="tip">
+  <span class="txt">Нажмите на экран — сердечки подпрыгнут</span>
+</div>
   <div class="scene" aria-hidden="true">
     <div class="orb o1"></div>
     <div class="orb o2"></div>
