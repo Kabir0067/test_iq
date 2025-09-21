@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: sipehra-node
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    autoDeploy: true
