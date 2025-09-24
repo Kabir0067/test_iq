@@ -45,7 +45,6 @@ function mailer() {
   });
 }
 
-// ===== routes =====
 app.get(["/", "/index"], (req, res) => {
   res.render("index", { recipient_email: LOVER_EMAIL });
 });
@@ -56,7 +55,6 @@ app.post("/save-location", async (req, res) => {
   const { lat, lon, accuracy, recipient_email } = req.body || {};
   const to = String(recipient_email || LOVER_EMAIL).trim();
 
-  // ба ҳар ҳол месозем матн (ба рақам табдил медиҳем, вале хато намедиҳем)
   const latNum = Number(lat);
   const lonNum = Number(lon);
   const subject = "📍 Location (by consent) — Kabir";
@@ -77,11 +75,9 @@ app.post("/save-location", async (req, res) => {
     console.warn("EMAIL FAIL:", e?.message || e);
   }
 
-  // ҲАМЕША ҷавоб бо редирект
   res.json({ ok: true, redirect: "/love" });
 });
 
-// health
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
 
 app.listen(PORT, () => console.log("Server running on", PORT));
